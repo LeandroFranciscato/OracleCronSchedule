@@ -11,34 +11,25 @@ create table ge_agendamento(
  nm_usuinc varchar2(30) not null,
  dt_usualt date,
  nm_usualt varchar2(30),
- st_ativo number(1) check (st_ativo in (0,1)) not null );
- 
- 
-alter table ge_agendamento
-move tablespace dad_unicampo_128k;
-
+ st_ativo number(1) check (st_ativo in (0,1)) not null );  
 
 alter table ge_agendamento
   add constraint pk_geagendamento primary key (sq_agendamento)
-  using index tablespace ind_unicampo_128k;
-  
+  using index;
 
 create public synonym ge_agendamento for ge_agendamento;
 
-
-grant all on ge_agendamento to unicoop_geral; 
-
-comment on column ge_agendamento.minutos is 'informe números de 0 a 59';
-comment on column ge_agendamento.horas is 'informe números de 0 a 23, sendo 0 Meia Noite';
-comment on column ge_agendamento.dias_da_semana is 'informe números de 1 a 7, sendo 1 Domingo e 7 Sábado.';
-comment on column ge_agendamento.dias_do_mes is 'informe números de 1 a 31';
-comment on column ge_agendamento.meses is 'informe números de 1 a 12, sendo 1 Janeiro e 12 Dezembro';
-comment on column ge_agendamento.ds_agendamento is 'Atenção!!! No lugar desses valores, você pode informar * (asterisco) para especificar uma execução constante. 
-Por exemplo, se o campo dias do mês conter *, o comando relacionado será executado todos os dias. 
-Você também pode informar intervalos no preenchimento, separando os números de início e fim através de - (hífen). 
-Por exemplo, se no campo horas for informando 2-5, o comando relacionado será executado às 2, 3, 4 e 5 horas. 
-E se o comando tiver que ser executado às 2 horas, entre 15 e 18 horas e às 22 horas? Basta informar 2,15-18,22. 
-Nestes casos, você separa os parâmetros por vírgula.';
+comment on column ge_agendamento.minutos is 'informe nÃºmeros de 0 a 59';
+comment on column ge_agendamento.horas is 'informe nÃºmeros de 0 a 23, sendo 0 Meia Noite';
+comment on column ge_agendamento.dias_da_semana is 'informe nÃºmeros de 1 a 7, sendo 1 Domingo e 7 SÃ¡bado.';
+comment on column ge_agendamento.dias_do_mes is 'informe nÃºmeros de 1 a 31';
+comment on column ge_agendamento.meses is 'informe nÃºmeros de 1 a 12, sendo 1 Janeiro e 12 Dezembro';
+comment on column ge_agendamento.ds_agendamento is 'AtenÃ§Ã£o!!! No lugar desses valores, vocÃª pode informar * (asterisco) para especificar uma execuÃ§Ã£o constante. 
+Por exemplo, se o campo dias do mÃªs conter *, o comando relacionado serÃ¡ executado todos os dias. 
+VocÃª tambÃ©m pode informar intervalos no preenchimento, separando os nÃºmeros de inÃ­cio e fim atravÃ©s de - (hÃ­fen). 
+Por exemplo, se no campo horas for informando 2-5, o comando relacionado serÃ¡ executado Ã s 2, 3, 4 e 5 horas. 
+E se o comando tiver que ser executado Ã s 2 horas, entre 15 e 18 horas e Ã s 22 horas? Basta informar 2,15-18,22. 
+Nestes casos, vocÃª separa os parÃ¢metros por vÃ­rgula.';
  
 create sequence sq_ge_agendamento 
 increment by 1 
@@ -46,6 +37,4 @@ start with 1
 nocache;
 
 create public synonym sq_ge_agendamento for sq_ge_agendamento;
-
-grant all on sq_ge_agendamento to unicoop_geral;
 /
