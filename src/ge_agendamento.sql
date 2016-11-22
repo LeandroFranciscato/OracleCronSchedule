@@ -17,8 +17,6 @@ alter table ge_agendamento
   add constraint pk_geagendamento primary key (sq_agendamento)
   using index;
 
-create public synonym ge_agendamento for ge_agendamento;
-
 comment on column ge_agendamento.minutos is 'informe números de 0 a 59';
 comment on column ge_agendamento.horas is 'informe números de 0 a 23, sendo 0 Meia Noite';
 comment on column ge_agendamento.dias_da_semana is 'informe números de 1 a 7, sendo 1 Domingo e 7 Sábado.';
@@ -35,6 +33,4 @@ create sequence sq_ge_agendamento
 increment by 1 
 start with 1
 nocache;
-
-create public synonym sq_ge_agendamento for sq_ge_agendamento;
 /
