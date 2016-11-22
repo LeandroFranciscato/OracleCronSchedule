@@ -12,30 +12,18 @@ create table ge_agendamento_log(
  dias_do_mes varchar2(100) not null,
  meses varchar2(100) not null);
  
-alter table ge_agendamento_log
- move tablespace dad_unicampo_128k;
- 
 alter table ge_agendamento_log 
   add constraint pk_ge_agendamento_log primary key (sq_disparo)
-  using index tablespace ind_unicampo_128k;
+  using index;
   
 alter table ge_agendamento_log  
   add constraint fk_agendamento_agendamento_log foreign key (sq_agendamento)
   references ge_agendamento(sq_agendamento);
   
-create index fk_agendamento_agendamento_log on ge_agendamento_log(sq_agendamento)
- tablespace ind_unicampo_128k;  
+create index fk_agendamento_agendamento_log on ge_agendamento_log(sq_agendamento);  
  
-create public synonym ge_agendamento_log for ge_agendamento_log;
-
-grant all on ge_agendamento_log to unicoop_geral;
-
 create sequence sq_ge_agendamento_log
 increment by 1
 start with 1
 nocache;  
-
-create public synonym sq_ge_agendamento_log for sq_ge_agendamento_log;
-
-grant all on sq_ge_agendamento_log to unicoop_geral;
 /
