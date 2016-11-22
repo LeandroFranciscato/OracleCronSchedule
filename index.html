@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Oraclecronschedule by Linepack</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Oraclecronschedule</h1>
+          <h2>Projeto PL/SQL (ORACLE) para execução de tarefas agendadas. Baseado no CRON/CRONTAB(UNIX).</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/Linepack/OracleCronSchedule/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/Linepack/OracleCronSchedule/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/Linepack/OracleCronSchedule" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="oraclecronschedule" class="anchor" href="#oraclecronschedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OracleCronSchedule</h1>
+
+<p>Projeto PL/SQL (ORACLE) para execução de tarefas agendadas. Baseado no CRON/CRONTAB(UNIX).<br>
+Projeto para suprir o gerenciamento de JOBS/SCHEDULES do banco de dados ORACLE (10g).</p>
+
+<h1>
+<a id="instalação" class="anchor" href="#instala%C3%A7%C3%A3o" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Instalação</h1>
+
+<p>Para instalar, basta executar o script <a href="https://github.com/Linepack/OracleCronSchedule/blob/master/install.sql">install.sql</a> (localizado na raiz do projeto). Serão criadas duas tabelas <strong>(GE_AGENDAMENTO, GE_AGENDAMENTO_LOG)</strong> com suas devidas Sequences, uma Package <strong>(PKG_CRON)</strong> e uma <strong>JOB</strong> com o intervalo mínimo de um minuto <code>trunc(sysdate,'mi') + 1/1440</code></p>
+
+<h1>
+<a id="uso" class="anchor" href="#uso" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Uso</h1>
+
+<p>Para agendar uma tarefa o usuário deve inserir um registro na tabela GE_AGENDAMENTO. Aqui ele preencherá o comando e a frequência com que o mesmo irá ser executado. Há também possibilidade de inativar e ativar tarefas a qualquer momento.</p>
+
+<p><strong>O preenchimento de cada campo é feito da seguinte maneira:</strong></p>
+
+<ul>
+<li>Minutos: informe números de 0 a 59;</li>
+<li>Horas: informe números de 0 a 23, sendo 0 meia-noite;</li>
+<li>Dias do mês: informe números de 0 a 31;</li>
+<li>Mês: informe números de 1 a 12, sendo 1 janeiro e 12 dezembro;</li>
+<li>Dias da semana: informe números de 1 a 7, sendo 1 domingo e 7 sábado;</li>
+<li>Comando: a tarefa que deve ser executada.</li>
+</ul>
+
+<p>No lugar desses valores, você pode informar * (asterisco) para especificar uma execução constante. Por exemplo, se o campo dias do mês conter *, o comando relacionado será executado todos os dias.</p>
+
+<p>Você também pode informar intervalos no preenchimento, separando os números de início e fim através de - (hífen). Por exemplo, se no campo horas for informando 2-5, o comando relacionado será executado às 2, 3, 4 e 5 horas. E se o comando tiver que ser executado às 2 horas, entre 15 e 18 horas e às 22 horas? Basta informar 2,15-18,22. Nestes casos, você separa os parâmetros por vírgula.</p>
+
+<p><strong>O acompanhamento </strong> da execução de cada processo/tarefa, pode ser visto na tabela GE_AGENDAMENTO_LOG.</p>
+
+<h1>
+<a id="exemplo" class="anchor" href="#exemplo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exemplo</h1>
+
+<p>Agendar um processo que parabeniza os aniversariantes do mês. Deve ser processado cada dia primeiro, as 10 horas e 30 minutos.</p>
+
+<div class="highlight highlight-source-sql"><pre><span class="pl-k">insert into</span> ge_agendamento
+    (sq_agendamento,
+     ds_agendamento,
+     ds_statment,            
+     meses,
+   dias_do_mes,
+   dias_da_semana,
+   horas,
+   minutos,
+     dt_usuinc,
+     nm_usuinc,
+     st_ativo)
+<span class="pl-k">values</span>
+    (<span class="pl-c1">sq_ge_agendamento</span>.<span class="pl-c1">nextval</span>,
+   <span class="pl-s"><span class="pl-pds">'</span>Parabeniza Aniversariantes do mês<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>BEGIN procedimento(); END;<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>1<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>10<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>30<span class="pl-pds">'</span></span>,
+   <span class="pl-k">sysdate</span>,
+   <span class="pl-s"><span class="pl-pds">'</span>Usuario<span class="pl-pds">'</span></span>,
+   <span class="pl-c1">1</span>);</pre></div>
+
+<p>Agendar um processo realiza um backup e restore. Deve ser executado no dias 1, 10, 20 e entre o 28 e 30 de cada mês, a meia-noite e ao meio dia, no primeiro minuto. A menos que seja fim de semana.</p>
+
+<div class="highlight highlight-source-sql"><pre><span class="pl-k">insert into</span> ge_agendamento
+    (sq_agendamento,
+     ds_agendamento,
+     ds_statment,            
+     meses,
+   dias_do_mes,
+   dias_da_semana,
+   horas,
+   minutos,
+     dt_usuinc,
+     nm_usuinc,
+     st_ativo)
+<span class="pl-k">values</span>
+    (<span class="pl-c1">sq_ge_agendamento</span>.<span class="pl-c1">nextval</span>,
+   <span class="pl-s"><span class="pl-pds">'</span>Backup/Restore<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>BEGIN procedimento(); END;<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>1,10,20,28-30<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>1-5<span class="pl-pds">'</span></span>,
+   <span class="pl-s"><span class="pl-pds">'</span>0,12<span class="pl-pds">'</span></span>,
+   <span class="pl-c1">0</span>,
+   <span class="pl-k">sysdate</span>,
+   <span class="pl-s"><span class="pl-pds">'</span>Usuario<span class="pl-pds">'</span></span>,
+   <span class="pl-c1">1</span>);</pre></div>
+
+<h1>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h1>
+
+<p>Copyright (c) 2016 Linepack
+<a href="https://github.com/Linepack/OracleCronSchedule/blob/master/LICENSE">MIT License</a></p>
+        </section>
+
+        <footer>
+          Oraclecronschedule is maintained by <a href="https://github.com/Linepack">Linepack</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
